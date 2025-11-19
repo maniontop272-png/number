@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mani 272 Lookup</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #111827;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --accent: #3b82f6;
+      --accent-700: #2563eb;
+      --danger: #ef4444;
+      --success: #22c55e;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      background: radial-gradient(1000px 600px at 10% 10%, #0b122b 0%, var(--bg) 60%);
+      color: var(--text);
+    }
+    header {
+      padding: 24px 16px;
+      text-align: center;
+    }
+    header h1 { margin: 0 0 8px; font-size: 1.75rem; }
+    header p { margin: 0; color: var(--muted); }
+    .container {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+    .card {
+      background: linear-gradient(180deg, #0d1326, var(--card));
+      border: 1px solid #1f2937;
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    }
+    .row { display: grid; grid-template-columns: 1fr auto; gap: 12px; }
+    .field {
+      position: relative;
+      display: flex;
+      gap: 10px;
+    }
+    .field input {
+      flex: 1;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid #374151;
+      background: #0b1224;
+      color: var(--text);
+      outline: none;
+    }
+    .field input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(59,130,246,0.15); }
+    .field select {
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid #374151;
+      background: #0b1224;
+      color: var(--text);
+    }
+    .actions { display: flex; gap: 10px; }
+    .btn {
+      border: none;
+      border-radius: 10px;
+      padding: 12px 16px;
+      cursor: pointer;
+      color: white;
+      background: var(--accent);
+      transition: background 0.2s ease, opacity 0.2s ease;
+    }
+    .btn:hover { background: var(--accent-700); }
+    .btn[disabled] { opacity: 0.6; cursor: not-allowed; }
+    .status { margin-top: 10px; font-size: 0.95rem; color: var(--muted); }
+    .status.error { color: var(--danger); }
+    .status.success { color: var(--success); }
+    .results { margin-top: 16px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border-bottom: 1px solid #1f2937; padding: 10px 8px; text-align: left; vertical-align: top; }
+    th { color: #cbd5e1; font-weight: 600; background: #0b1224; position: sticky; top: 0; }
+    tbody tr:hover { background: #0b142a; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    .pill { display: inline-block; padding: 4px 8px; border-radius: 999px; background: #0b1224; border: 1px solid #1f2937; font-size: 0.85rem; color: #cbd5e1; }
+    .footer { margin-top: 22px; text-align: center; color: var(--muted); font-size: 0.9rem; }
+    .owner { font-size: 0.85rem; color: var(--muted); }
+    .empty { text-align: center; color: var(--muted); padding: 24px; }
+    header, .container { display: none; }
+    :root { --bg:#0b1020; --card:#0f172a; --text:#e5e7eb; --muted:#9ca3af; --accent:#22c55e; --accent-700:#16a34a; --danger:#ef4444; --success:#22c55e; --border:#1f2937; --panel:#0b1224; }
+    :root.light { --bg:#f8fafc; --card:#ffffff; --text:#0f172a; --muted:#475569; --accent:#2563eb; --accent-700:#1d4ed8; --danger:#dc2626; --success:#16a34a; --border:#e2e8f0; --panel:#f1f5f9; }
+    body { background: radial-gradient(1200px 700px at 10% 10%, #0b142a 0%, var(--bg) 60%); }
+    .appbar { display:flex; align-items:center; justify-content:space-between; padding: 14px 18px; border-bottom: 1px solid var(--border); background: linear-gradient(180deg, var(--panel), var(--card)); position: sticky; top:0; z-index: 20; }
+    .brand { display:flex; align-items:center; gap:10px; font-weight:700; }
+    .brand .lights { display:flex; gap:6px; }
+    .dot { width:12px; height:12px; border-radius:999px; }
+    .dot.red { background:#ef4444; } .dot.yellow{background:#f59e0b;} .dot.green{background:#22c55e;}
+    .brand .title { font-size: 1.1rem; }
+    .top-actions { display:flex; align-items:center; gap:10px; }
+    .pill { display:inline-block; padding:8px 14px; border-radius:999px; border:1px solid var(--border); background: var(--panel); color: var(--text); font-weight:700; font-size:1rem; }
+    .btn { border:none; border-radius:10px; padding:12px 16px; cursor:pointer; color:#fff; background: var(--accent); transition:transform .06s ease, background .2s ease, opacity .2s ease; }
+    .btn:hover { background: var(--accent-700); }
+    .btn:active { transform: scale(0.98); }
+    .btn.secondary { background:#64748b; }
+    .btn.run { background:#f59e0b; color:#111827; font-weight:800; }
+    .btn.run:hover { background:#fbbf24; }
+    .btn.clr { background:#334155; }
+    .layout { display:grid; grid-template-columns: 1fr 320px; gap:16px; max-width:1200px; margin: 16px auto; padding: 0 16px; }
+    .panel { background: linear-gradient(180deg, var(--panel), var(--card)); border:1px solid var(--border); border-radius:16px; box-shadow: 0 10px 30px rgba(0,0,0,.25); }
+    .left { padding:16px; }
+    .right { padding:16px; }
+    .searchbar { display:grid; grid-template-columns: 1fr auto auto; gap:12px; align-items:center; }
+    .input { padding:14px 16px; border-radius:12px; border:1px solid var(--border); background: var(--panel); color: var(--text); outline:none; box-shadow: inset 0 0 0 1px #0b1a2f; }
+    .tabs { display:flex; gap:10px; margin-top:12px; }
+    .tab { flex:1; padding:12px 14px; border-radius:10px; border:1px solid var(--border); background: var(--panel); color: var(--text); text-align:center; cursor:pointer; position:relative; }
+    .tab.active { background:#0b1a38; border-color:#1d2b4f; box-shadow: inset 0 -3px 0 0 #22c55e; }
+    .results { margin-top: 12px; }
+    .code { background:#0a1f24; border:1px solid #132a34; color:#2dd4bf; border-radius:12px; padding:18px; overflow:auto; font-family: ui-monospace, Menlo, Consolas, monospace; white-space: pre-wrap; }
+    .big-number { font-family: ui-monospace, Menlo, Consolas, monospace; color:#93e5ab; font-size:1.2rem; font-weight:700; margin-bottom:8px; }
+    .timestamp { color:#7dd3fc; font-size:.9rem; text-align:right; margin-top:8px; }
+    .history { display:grid; gap:10px; }
+    .hist-item { border:1px solid #132a34; background:#0b1822; border-radius:10px; padding:12px; cursor:pointer; }
+    .hist-item:hover { background:#0e1f2b; }
+    .hist-term { color:#93e5ab; font-weight:700; }
+    .hist-time { color:#7dd3fc; font-size:.9rem; }
+    .label { color: var(--muted); font-size: .9rem; margin-bottom:6px; }
+    .profile { display:flex; gap:12px; align-items:center; }
+    .avatar { width:48px; height:48px; border-radius:999px; background: radial-gradient(circle, #22c55e 0%, #16a34a 60%, #0ea5e9 100%); border:2px solid var(--border); background-size: cover; background-position: center; }
+    .owner { font-size:.85rem; color: var(--muted); margin-top:8px; }
+    .actions-col { display:flex; gap:8px; margin-top:10px; }
+    .hidden { display:none; }
+    .modal { position: fixed; inset:0; background: rgba(0,0,0,.6); display:flex; align-items:center; justify-content:center; }
+    .modal .content { width: 520px; max-width: 95vw; }
+    .field { display:grid; gap:8px; margin-top:10px; }
+    .grid2 { display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</head>
+<body>
+  <div class="appbar animate__animated animate__fadeIn">
+    <div class="brand">
+      <div class="lights"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div>
+      <div class="title">Mani 272 Lookup</div>
+    </div>
+    <div class="top-actions">
+      <span class="pill">Credits: <span id="credits">0</span></span>
+      <button id="theme" class="btn secondary">Dark</button>
+    </div>
+  </div>
+  <div class="layout">
+    <div class="panel left animate__animated animate__fadeInUp">
+      <div class="searchbar">
+        <input id="term" class="input" placeholder="Enter 10-digit number e.g. 9876543210" />
+        <button id="search" class="btn run" style="min-width:92px">RUN</button>
+        <button id="clear" class="btn clr">CLR</button>
+      </div>
+      <div class="tabs">
+        <div id="tabResponse" class="tab active">Response</div>
+        <div id="tabHistory" class="tab">History</div>
+      </div>
+      <div id="status" class="status"></div>
+      <div id="owner" class="owner"></div>
+      <div id="panelResponse" class="results">
+        <div id="queryEcho" class="big-number"></div>
+        <div id="resultCount" class="label"></div>
+        <div id="code" class="code"></div>
+        <div id="timestamp" class="timestamp"></div>
+        <div id="devCredit" class="timestamp">Developed By ！Ｍａｎｉ２７２</div>
+      </div>
+      <div id="panelHistory" class="results hidden">
+        <div id="historyList" class="history"></div>
+      </div>
+    </div>
+    <div class="panel right animate__animated animate__fadeInUp">
+      <div class="profile">
+        <div class="avatar"></div>
+        <div>
+          <div id="profileName" style="font-weight:600">Mani 272</div>
+          <div id="profileEmail" class="owner">mani272@example.com</div>
+        </div>
+      </div>
+      <div class="actions-col">
+        <button id="copyResponse" class="btn" style="flex:1">Copy Response</button>
+        <button id="clearOutput" class="btn secondary" style="flex:1">Clear Output</button>
+      </div>
+      <div class="owner">Built by Mani 272</div>
+    </div>
+  </div>
+  
+
+  <script>
+    const API_BASE = 'https://subhxmouktik-number-api.onrender.com/api';
+    const KEY = 'HUNTER';
+    const DEFAULT_LOGO = 'https://cdn.jsdelivr.net/gh/trae-ai/asset-hosting@main/examples/images/mani272-logo.png';
+    const el = { term: document.getElementById('term'), search: document.getElementById('search'), clear: document.getElementById('clear'), status: document.getElementById('status'), owner: document.getElementById('owner'), code: document.getElementById('code'), queryEcho: document.getElementById('queryEcho'), resultCount: document.getElementById('resultCount'), tabResponse: document.getElementById('tabResponse'), tabHistory: document.getElementById('tabHistory'), panelResponse: document.getElementById('panelResponse'), panelHistory: document.getElementById('panelHistory'), historyList: document.getElementById('historyList'), credits: document.getElementById('credits'), theme: document.getElementById('theme'), profileName: document.getElementById('profileName'), profileEmail: document.getElementById('profileEmail'), copyResponse: document.getElementById('copyResponse'), clearOutput: document.getElementById('clearOutput'), timestamp: document.getElementById('timestamp'), avatar: document.querySelector('.avatar') };
+    const anim = { pulseRun() { gsap.to(el.search, { scale:1.03, duration:0.6, yoyo:true, repeat:1, ease:'power1.inOut' }); }, flashStatus() { gsap.from(el.status, { opacity:0, y:6, duration:0.25 }); }, flipTabs() { gsap.from([el.tabResponse, el.tabHistory], { opacity:0, y:8, duration:0.25, stagger:0.05 }); } };
+    const store = { save(k,v){ localStorage.setItem(k, JSON.stringify(v)); }, load(k,d){ try{ const v=localStorage.getItem(k); return v?JSON.parse(v):d; }catch(e){ return d; } } };
+    let currentUser = store.load('currentUser', null);
+    function getUsers(){ return store.load('users', {}); }
+    function setUsers(u){ store.save('users', u); }
+    function updateProfile(){ const name=currentUser?currentUser.username:'Mani 272'; const email=currentUser?(currentUser.email|| (name+'@example.com')):'mani272@example.com'; el.profileName.textContent=name; el.profileEmail.textContent=email; el.credits.textContent=currentUser?currentUser.credits||0:0; }
+    
+    function hasCredits(){ return currentUser && (currentUser.credits||0) > 0; }
+    function consumeCredit(){ if(!currentUser) return; const users=getUsers(); currentUser.credits = Math.max(0, (currentUser.credits||0)-1); users[currentUser.username]=currentUser; setUsers(users); store.save('currentUser', currentUser); updateProfile(); }
+    function setStatus(text, kind){ el.status.textContent=text||''; el.status.className='status'+(kind?' '+kind:''); anim.flashStatus(); }
+    function sanitizeTerm(raw){ const t=(raw||'').trim(); return t; }
+    function renderJSON(data){ el.code.textContent = JSON.stringify(data, null, 2); }
+    function stripOwner(o){ if(!o || typeof o!=='object') return; if(Object.prototype.hasOwnProperty.call(o,'owner')) delete o.owner; for(const k in o){ try{ stripOwner(o[k]); }catch(_){} } }
+    function renderHistory(){ const hist=store.load('history', []); el.historyList.innerHTML = hist.map(h => `<div class=\"hist-item\" data-term=\"${h.term}\"><div class=\"hist-term\">${h.term}</div><div class=\"hist-time\">${h.at}</div></div>`).join('') || '<div class=\"empty\">No history</div>'; }
+    function addHistory(term, payload){ const hist=store.load('history', []); hist.unshift({ term, payload, at: new Date().toLocaleString() }); store.save('history', hist); renderHistory(); }
+    async function search(){ const term=sanitizeTerm(el.term.value); if(!term){ setStatus('Enter a number', 'error'); return; } if(!hasCredits()){ setStatus('No credits. Contact admin.', 'error'); anim.pulseRun(); return; } const prev=el.search.textContent; el.search.disabled=true; el.search.textContent='...'; setStatus('Searching…'); el.owner.textContent=''; el.queryEcho.textContent = term; anim.pulseRun(); const url = `${API_BASE}?key=${encodeURIComponent(KEY)}&type=${encodeURIComponent('mobile')}&term=${encodeURIComponent(term)}`; try { const res = await fetch(url, { headers: { 'Accept':'application/json' } }); const data = await res.json(); stripOwner(data); if (!data || data.success === false){ const message = (data && (data.message || data.error)) || 'Request failed'; setStatus(message, 'error'); renderJSON(data); el.resultCount.textContent=''; return; } const nested = data.result && data.result.result ? data.result.result : data.result; const count = Array.isArray(nested) ? nested.length : 0; const wrapped = { success:true, query: term, count, response: data }; renderJSON(wrapped); setStatus(`Found ${count}`, 'success'); el.resultCount.textContent = count ? `Records: ${count}` : 'No records'; addHistory(term, wrapped); consumeCredit(); el.timestamp.textContent = new Date().toLocaleString(); } catch(e){ setStatus('Network error', 'error'); renderJSON({ error: String(e) }); el.resultCount.textContent=''; } finally { el.search.disabled=false; el.search.textContent=prev; } }
+    el.search.addEventListener('click', search);
+    el.clear.addEventListener('click', ()=>{ el.term.value=''; el.code.textContent=''; el.queryEcho.textContent=''; setStatus(''); el.owner.textContent=''; });
+    el.term.addEventListener('keydown', e=>{ if(e.key==='Enter') search(); });
+    el.clearOutput.addEventListener('click', ()=>{ el.code.textContent=''; el.resultCount.textContent=''; setStatus('Cleared','success'); });
+    el.copyResponse.addEventListener('click', async ()=>{ const text=el.code.textContent||''; try{ await navigator.clipboard.writeText(text); setStatus('Copied','success'); }catch(e){ setStatus('Copy failed','error'); } });
+    function showResponse(){ el.panelResponse.classList.remove('hidden'); el.panelHistory.classList.add('hidden'); el.tabResponse.classList.add('active'); el.tabHistory.classList.remove('active'); }
+    function showHistory(){ renderHistory(); el.panelResponse.classList.add('hidden'); el.panelHistory.classList.remove('hidden'); el.tabResponse.classList.remove('active'); el.tabHistory.classList.add('active'); }
+    el.historyList.addEventListener('click', (e)=>{ const item=e.target.closest('.hist-item'); if(!item) return; const term=item.dataset.term; el.term.value=term; showResponse(); search(); });
+    el.tabResponse.addEventListener('click', showResponse);
+    el.tabHistory.addEventListener('click', showHistory);
+    el.theme.addEventListener('click', ()=>{ const root=document.documentElement; if(root.classList.contains('light')){ root.classList.remove('light'); el.theme.textContent='Dark'; } else { root.classList.add('light'); el.theme.textContent='Light'; } });
+    const params=new URLSearchParams(location.search);
+    const urlTerm=params.get('term');
+    const autoRun=params.get('autorun')==='1';
+    const logo=params.get('logo') || store.load('logoUrl', null) || DEFAULT_LOGO;
+    if(logo && el.avatar){ el.avatar.style.backgroundImage = `url(${logo})`; store.save('logoUrl', logo); }
+    { const users=getUsers(); if(!users['Mani 272']) users['Mani 272']={ username:'Mani 272', email:'mani272@example.com', credits:26, role:'user' }; currentUser=users['Mani 272']; setUsers(users); store.save('currentUser', currentUser); }
+    updateProfile(); showResponse();
+    if(urlTerm){ el.term.value=urlTerm; if(currentUser && autoRun) search(); }
+    gsap.from('.panel', { y:18, opacity:0, duration:.35, stagger:.05 });
+  </script>
+  </body>
+</html>
