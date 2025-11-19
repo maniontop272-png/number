@@ -138,12 +138,51 @@
     .modal .content { width: 520px; max-width: 95vw; }
     .field { display:grid; gap:8px; margin-top:10px; }
     .grid2 { display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
+    .login-modal { position: fixed; inset:0; background: rgba(0,0,0,.85); display:flex; align-items:center; justify-content:center; z-index:1000; }
+    .login-card { background: linear-gradient(180deg, var(--panel), var(--card)); border:1px solid var(--border); border-radius:20px; padding:32px; width:420px; max-width:90vw; box-shadow: 0 20px 60px rgba(0,0,0,.5); }
+    .login-card h2 { margin:0 0 8px; font-size:1.5rem; }
+    .login-card p { margin:0 0 24px; color: var(--muted); }
+    .login-field { margin-bottom:18px; }
+    .login-field label { display:block; margin-bottom:8px; color: var(--muted); font-size:.9rem; }
+    .login-field input { width:100%; padding:14px 16px; border-radius:12px; border:1px solid var(--border); background: var(--panel); color: var(--text); outline:none; box-shadow: inset 0 0 0 1px #0b1a2f; }
+    .login-field input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(59,130,246,0.15); }
+    .login-error { color: var(--danger); font-size:.9rem; margin-top:8px; display:none; }
+    .login-error.show { display:block; }
+    .login-btn { width:100%; padding:14px; border-radius:12px; border:none; background: var(--accent); color:white; font-weight:600; cursor:pointer; margin-top:8px; }
+    .login-btn:hover { background: var(--accent-700); }
+    .login-btn:disabled { opacity:0.6; cursor:not-allowed; }
+    .btn-icon { border:none; border-radius:10px; padding:10px 12px; cursor:pointer; background: var(--panel); color: var(--text); display:flex; align-items:center; justify-content:center; transition:background .2s ease, transform .06s ease; border:1px solid var(--border); }
+    .btn-icon:hover { background: var(--card); }
+    .btn-icon:active { transform: scale(0.95); }
+    .btn-icon svg { width:18px; height:18px; }
+    .btn-icon.logout { background:#334155; }
+    .btn-icon.logout:hover { background:#475569; }
   </style>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </head>
 <body>
-  <div class="appbar animate__animated animate__fadeIn">
+  <!-- Login Modal -->
+  <div id="loginModal" class="login-modal animate__animated animate__fadeIn">
+    <div class="login-card">
+      <h2>Login Required</h2>
+      <p>Please enter your credentials to access Mani 272 Lookup</p>
+      <form id="loginForm">
+        <div class="login-field">
+          <label for="loginEmail">Email</label>
+          <input type="email" id="loginEmail" placeholder="Enter your email" required autocomplete="email" />
+        </div>
+        <div class="login-field">
+          <label for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" placeholder="Enter your password" required autocomplete="current-password" />
+        </div>
+        <div id="loginError" class="login-error">Invalid email or password</div>
+        <button type="submit" class="login-btn">Login</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="appbar animate__animated animate__fadeIn" style="display:none;" id="mainApp">
     <div class="brand">
       <div class="lights"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div>
       <div class="title">Mani 272 Lookup</div>
@@ -151,9 +190,14 @@
     <div class="top-actions">
       <span class="pill">Credits: <span id="credits">0</span></span>
       <button id="theme" class="btn secondary">Dark</button>
+      <button id="logoutBtn" class="btn-icon logout" title="Logout">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+        </svg>
+      </button>
     </div>
   </div>
-  <div class="layout">
+  <div class="layout" style="display:none;" id="mainLayout">
     <div class="panel left animate__animated animate__fadeInUp">
       <div class="searchbar">
         <input id="term" class="input" placeholder="Enter 10-digit number e.g. 9876543210" />
@@ -195,10 +239,10 @@
   
 
   <script>
-    const API_BASE = 'https://subhxmouktik-number-api.onrender.com/api';
+    const API_BASE = '';
     const KEY = 'HUNTER';
     const DEFAULT_LOGO = 'https://files.catbox.moe/u3079a.png';
-    const el = { term: document.getElementById('term'), search: document.getElementById('search'), clear: document.getElementById('clear'), status: document.getElementById('status'), owner: document.getElementById('owner'), code: document.getElementById('code'), queryEcho: document.getElementById('queryEcho'), resultCount: document.getElementById('resultCount'), tabResponse: document.getElementById('tabResponse'), tabHistory: document.getElementById('tabHistory'), panelResponse: document.getElementById('panelResponse'), panelHistory: document.getElementById('panelHistory'), historyList: document.getElementById('historyList'), credits: document.getElementById('credits'), theme: document.getElementById('theme'), profileName: document.getElementById('profileName'), profileEmail: document.getElementById('profileEmail'), copyResponse: document.getElementById('copyResponse'), clearOutput: document.getElementById('clearOutput'), timestamp: document.getElementById('timestamp'), avatar: document.querySelector('.avatar') };
+    const el = { term: document.getElementById('term'), search: document.getElementById('search'), clear: document.getElementById('clear'), status: document.getElementById('status'), owner: document.getElementById('owner'), code: document.getElementById('code'), queryEcho: document.getElementById('queryEcho'), resultCount: document.getElementById('resultCount'), tabResponse: document.getElementById('tabResponse'), tabHistory: document.getElementById('tabHistory'), panelResponse: document.getElementById('panelResponse'), panelHistory: document.getElementById('panelHistory'), historyList: document.getElementById('historyList'), credits: document.getElementById('credits'), theme: document.getElementById('theme'), profileName: document.getElementById('profileName'), profileEmail: document.getElementById('profileEmail'), copyResponse: document.getElementById('copyResponse'), clearOutput: document.getElementById('clearOutput'), timestamp: document.getElementById('timestamp'), avatar: document.querySelector('.avatar'), logoutBtn: document.getElementById('logoutBtn') };
     const anim = { pulseRun() { gsap.to(el.search, { scale:1.03, duration:0.6, yoyo:true, repeat:1, ease:'power1.inOut' }); }, flashStatus() { gsap.from(el.status, { opacity:0, y:6, duration:0.25 }); }, flipTabs() { gsap.from([el.tabResponse, el.tabHistory], { opacity:0, y:8, duration:0.25, stagger:0.05 }); } };
     const store = { save(k,v){ localStorage.setItem(k, JSON.stringify(v)); }, load(k,d){ try{ const v=localStorage.getItem(k); return v?JSON.parse(v):d; }catch(e){ return d; } } };
     let currentUser = store.load('currentUser', null);
@@ -226,15 +270,64 @@
     el.tabResponse.addEventListener('click', showResponse);
     el.tabHistory.addEventListener('click', showHistory);
     el.theme.addEventListener('click', ()=>{ const root=document.documentElement; if(root.classList.contains('light')){ root.classList.remove('light'); el.theme.textContent='Dark'; } else { root.classList.add('light'); el.theme.textContent='Light'; } });
+    el.logoutBtn.addEventListener('click', ()=>{ store.save('isLoggedIn', false); showLogin(); gsap.to(loginModal, { opacity:0, duration:.2, onComplete:()=>{ loginModal.style.display='flex'; gsap.from(loginModal, { opacity:0, duration:.3 }); } }); });
+    // Login functionality
+    const LOGIN_EMAIL = 'mani272@gmail.com';
+    const LOGIN_PASSWORD = 'mani272';
+    const loginModal = document.getElementById('loginModal');
+    const loginForm = document.getElementById('loginForm');
+    const loginError = document.getElementById('loginError');
+    const mainApp = document.getElementById('mainApp');
+    const mainLayout = document.getElementById('mainLayout');
+    
+    function checkAuth() {
+      const isLoggedIn = store.load('isLoggedIn', false);
+      if (isLoggedIn) {
+        showMainApp();
+      } else {
+        showLogin();
+      }
+    }
+    
+    function showLogin() {
+      loginModal.style.display = 'flex';
+      mainApp.style.display = 'none';
+      mainLayout.style.display = 'none';
+    }
+    
+    function showMainApp() {
+      loginModal.style.display = 'none';
+      mainApp.style.display = 'flex';
+      mainLayout.style.display = 'grid';
+    }
+    
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      
+      if (email === LOGIN_EMAIL && password === LOGIN_PASSWORD) {
+        store.save('isLoggedIn', true);
+        loginError.classList.remove('show');
+        showMainApp();
+        gsap.from('.panel', { y:18, opacity:0, duration:.35, stagger:.05 });
+      } else {
+        loginError.classList.add('show');
+        gsap.from(loginError, { opacity:0, y:-5, duration:.2 });
+      }
+    });
+    
+    // Check authentication on load
+    checkAuth();
+    
     const params=new URLSearchParams(location.search);
     const urlTerm=params.get('term');
     const autoRun=params.get('autorun')==='1';
     const logo=params.get('logo') || store.load('logoUrl', null) || DEFAULT_LOGO;
     if(logo && el.avatar){ el.avatar.style.backgroundImage = `url(${logo})`; store.save('logoUrl', logo); }
-    { const users=getUsers(); if(!users['Mani 272']) users['Mani 272']={ username:'Mani 272', email:'mani272@example.com', credits:26, role:'user' }; currentUser=users['Mani 272']; setUsers(users); store.save('currentUser', currentUser); }
+    { const users=getUsers(); if(!users['Mani 272']) users['Mani 272']={ username:'Mani 272', email:'mani272@gmail.com', credits:26, role:'user' }; currentUser=users['Mani 272']; setUsers(users); store.save('currentUser', currentUser); }
     updateProfile(); showResponse();
     if(urlTerm){ el.term.value=urlTerm; if(currentUser && autoRun) search(); }
-    gsap.from('.panel', { y:18, opacity:0, duration:.35, stagger:.05 });
   </script>
   </body>
 </html>
