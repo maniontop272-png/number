@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+    <meta name="theme-color" content="#0b1020" />
+    <title>Long Bio Lookup</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <style>
+        :root {
+            --bg: #0a0e1a;
+            --card: #1a1f35;
+            --text: #f1f5f9;
+            --muted: #94a3b8;
+            --accent: #22c55e;
+            --accent-700: #16a34a;
+            --danger: #f43f5e;
+            --success: #10b981;
+            --border: #2d3548;
+            --panel: #151a2e;
+        }
+
+        :root.light {
+            --bg: #ffffff;
+            --card: #f8fafc;
+            --text: #1e293b;
+            --muted: #64748b;
+            --accent: #22c55e;
+            --accent-700: #16a34a;
+            --danger: #ef4444;
+            --success: #10b981;
+            --border: #e2e8f0;
+            --panel: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #064e3b 25%, #166534 50%, #14532d 75%, #0f172a 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 20s ease infinite;
+            color: var(--text);
+            position: relative;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        :root.light body {
+            background: linear-gradient(135deg, #f8fafc 0%, #d1fae5 25%, #a7f3d0 50%, #6ee7b7 75%, #34d399 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 20s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        #particles-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .appbar,
+        .layout {
+            position: relative;
+            z-index: 1;
+        }
+
+        .appbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, .1);
+            background: rgba(26, 31, 53, 0.8);
+            backdrop-filter: blur(20px) saturate(180%);
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, .2);
+        }
+
+        :root.light .appbar {
+            background: rgba(248, 250, 252, 0.95);
+            border-bottom: 1px solid rgba(0, 0, 0, .1);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, .08);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+        }
+
+        .brand .lights {
+            display: flex;
+            gap: 7px;
+        }
+
+        .dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 999px;
+            box-shadow: 0 0 10px currentColor;
+            transition: all .3s ease;
+        }
+
+        .dot.red {
+            background: #ef4444;
+            color: #ef4444;
+        }
+
+        .dot.yellow {
+            background: #f59e0b;
+            color: #f59e0b;
+        }
+
+        .dot.green {
+            background: #22c55e;
+            color: #22c55e;
+            animation: pulse 2s ease infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.6;
+            }
+        }
+
+        .brand .title {
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, #22c55e 0%, #4ade80 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        :root.light .brand .title {
+            background: linear-gradient(135deg, #16a34a 0%, #22c55e 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 12px;
+            padding: 12px 20px;
+            cursor: pointer;
+            color: #fff;
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            transition: all .3s ease;
+            box-shadow: 0 4px 15px rgba(34, 197, 94, .3);
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn:hover {
+            box-shadow: 0 6px 25px rgba(34, 197, 94, .45);
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .btn.secondary {
+            background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+            box-shadow: 0 4px 15px rgba(100, 116, 139, .3);
+            color: white;
+        }
+
+        .btn.secondary:hover {
+            box-shadow: 0 6px 25px rgba(100, 116, 139, .45);
+        }
+
+        .layout {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 16px;
+        }
+
+        .panel {
+            background: rgba(26, 31, 53, 0.6);
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, .3);
+            backdrop-filter: blur(20px) saturate(180%);
+            padding: 32px;
+            margin-bottom: 20px;
+        }
+
+        :root.light .panel {
+            background: rgba(248, 250, 252, 0.9);
+            border: 1px solid rgba(0, 0, 0, .1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, .1);
+        }
+
+        .field {
+            margin-bottom: 20px;
+        }
+
+        .label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--muted);
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .input {
+            width: 100%;
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, .1);
+            background: rgba(21, 26, 46, .6);
+            color: var(--text);
+            outline: none;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, .2);
+            transition: all .3s ease;
+            backdrop-filter: blur(10px);
+            font-size: 1.1rem;
+        }
+
+        .input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, .2), inset 0 2px 8px rgba(34, 197, 94, .1);
+            background: rgba(21, 26, 46, .8);
+        }
+
+        :root.light .input {
+            background: rgba(255, 255, 255, .8);
+            border: 1px solid rgba(0, 0, 0, .1);
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, .05);
+        }
+
+        :root.light .input:focus {
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, .15), inset 0 1px 3px rgba(0, 0, 0, .05);
+            background: #fff;
+        }
+
+        .results-area {
+            margin-top: 24px;
+            display: none;
+        }
+
+        .results-area.active {
+            display: block;
+        }
+
+        pre {
+            background: rgba(0, 0, 0, .2);
+            padding: 16px;
+            border-radius: 12px;
+            overflow: auto;
+            color: #fff;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--muted);
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(34, 197, 94, .2);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .dev-credit {
+            color: #60a5fa;
+            font-size: 0.9rem;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="particles-canvas"></canvas>
+    <div class="appbar animate__animated animate__fadeInDown">
+        <div class="brand">
+            <div class="lights"><span class="dot red"></span><span class="dot yellow"></span><span
+                    class="dot green"></span></div>
+            <div class="title">Long Bio Lookup</div>
+        </div>
+        <div class="top-actions">
+            <a href="ff-lookup.html" class="btn"
+                style="background:linear-gradient(135deg, #22c55e 0%, #16a34a 100%); box-shadow:0 4px 15px rgba(34,197,94,.3);">🎮
+                FF Lookup</a>
+            <a href="index.html" class="btn secondary">🏠 Home</a>
+        </div>
+    </div>
+    <div class="layout animate__animated animate__fadeInUp">
+        <div class="panel">
+            <h1>🔎 Long Bio Player Lookup</h1>
+            <div class="field">
+                <label class="label">Enter UID</label>
+                <div class="search-row" style="display:grid; grid-template-columns:1fr auto; gap:12px;">
+                    <input type="text" id="uidInput" class="input" placeholder="e.g. 12345" />
+                    <button id="searchBtn" class="btn">Search</button>
+                </div>
+            </div>
+            <div id="loadingArea" class="loading" style="display:none;">
+                <div class="loading-spinner"></div>
+                <p>Fetching data...</p>
+            </div>
+            <div id="errorArea" class="error-message"
+                style="display:none; background:linear-gradient(135deg, rgba(244,63,94,0.1) 0%, rgba(225,29,72,0.1) 100%); border:1px solid rgba(244,63,94,0.3); border-radius:12px; padding:20px; text-align:center; color:#f43f5e; font-weight:600;">
+                Unable to fetch data.
+            </div>
+            <div id="resultsArea" class="results-area">
+                <pre id="jsonOutput"></pre>
+            </div>
+            <div class="dev-credit">Developed By ！Ｍａｎｉ２７２</div>
+        </div>
+    </div>
+    <script>
+        const API_URL = 'https://long-bio-iota.vercel.app/api?uid='; // adjust if endpoint differs
+        const el = {
+            uidInput: document.getElementById('uidInput'),
+            searchBtn: document.getElementById('searchBtn'),
+            loadingArea: document.getElementById('loadingArea'),
+            errorArea: document.getElementById('errorArea'),
+            resultsArea: document.getElementById('resultsArea'),
+            jsonOutput: document.getElementById('jsonOutput')
+        };
+        function showLoading() { el.loadingArea.style.display = 'block'; el.errorArea.style.display = 'none'; el.resultsArea.classList.remove('active'); }
+        function showError(msg) { el.loadingArea.style.display = 'none'; el.errorArea.style.display = 'block'; el.errorArea.textContent = msg || 'Unable to fetch data.'; el.resultsArea.classList.remove('active'); }
+        function showResults() { el.loadingArea.style.display = 'none'; el.errorArea.style.display = 'none'; el.resultsArea.classList.add('active'); }
+        async function search() { const uid = el.uidInput.value.trim(); if (!uid) { showError('Please enter a UID'); return; } showLoading(); try { const res = await fetch(API_URL + encodeURIComponent(uid)); if (!res.ok) throw new Error('Network response was not ok'); const data = await res.json(); el.jsonOutput.textContent = JSON.stringify(data, null, 2); showResults(); } catch (e) { console.error(e); showError('Failed to fetch data.'); } }
+        el.searchBtn.addEventListener('click', search);
+        el.uidInput.addEventListener('keydown', e => { if (e.key === 'Enter') search(); });
+        // Particle animation (same as other pages)
+        (function () {
+            const canvas = document.getElementById('particles-canvas'); const ctx = canvas.getContext('2d'); let particles = []; let time = 0; const djColors = [{ r: 99, g: 102, b: 241 }, { r: 139, g: 92, b: 246 }, { r: 168, g: 85, b: 247 }, { r: 59, g: 130, b: 246 }, { r: 16, g: 185, b: 129 }, { r: 245, g: 158, b: 11 }, { r: 239, g: 68, b: 68 }, { r: 96, g: 165, b: 250 }]; function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; } function Particle() { this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height; this.vx = (Math.random() - 0.5) * 1.2; this.vy = (Math.random() - 0.5) * 1.2; this.radius = Math.random() * 2.5 + 1; this.baseRadius = this.radius; this.opacity = Math.random() * 0.8 + 0.3; this.colorIndex = Math.floor(Math.random() * djColors.length); this.updateColor(); } Particle.prototype.updateColor = function () { time += 0.01; const ci = (Math.floor(time * 10) + this.colorIndex) % djColors.length; const ni = (ci + 1) % djColors.length; const t = (time * 10) % 1; const c1 = djColors[ci]; const c2 = djColors[ni]; this.colorR = Math.floor(c1.r + (c2.r - c1.r) * t); this.colorG = Math.floor(c1.g + (c2.g - c1.g) * t); this.colorB = Math.floor(c1.b + (c2.b - c1.b) * t); this.color = `rgba(${this.colorR},${this.colorG},${this.colorB},${this.opacity})`; }; function init() { particles = []; const count = Math.floor((canvas.width * canvas.height) / 12000); for (let i = 0; i < count; i++) particles.push(new Particle()); } function draw() { ctx.clearRect(0, 0, canvas.width, canvas.height); time += 0.01; particles.forEach(p => { p.x += p.vx; p.y += p.vy; if (p.x < 0 || p.x > canvas.width) p.vx *= -1; if (p.y < 0 || p.y > canvas.height) p.vy *= -1; p.x = Math.max(0, Math.min(canvas.width, p.x)); p.y = Math.max(0, Math.min(canvas.height, p.y)); p.updateColor(); const pulse = Math.sin(time * 2) * 0.3 + 1; p.radius = p.baseRadius * pulse; ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2); ctx.fillStyle = p.color; ctx.fill(); }); requestAnimationFrame(draw); }
+            resize(); init(); draw(); window.addEventListener('resize', () => { resize(); init(); });
+        })();
+    </script>
+</body>
+
+</html>
